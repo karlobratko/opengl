@@ -1,6 +1,8 @@
 #Directories
 .vs
 bin/
+global_res
+versions
 
 #Files
 *.user
