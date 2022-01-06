@@ -3,6 +3,7 @@
 bin/
 global_res
 versions
+TestingEnvironment
 
 #Files
 *.user
