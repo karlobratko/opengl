@@ -183,20 +183,20 @@ public:
   }
 
 private:
-  static constexpr std::int32_t SUCCESS_RATE = 15;
+  static constexpr std::int32_t SUCCESS_RATE = 40;
 
   std::int32_t m_Row, m_Col;
   Cell* m_Data;
 
 };
 
-int main1() {
-  Matrix m{ 35, 35 };
+int main() {
+  Matrix m{ 20, 20 };
   m.random_fill(static_cast<std::uint32_t>(std::chrono::system_clock::now().time_since_epoch().count()));
 
   while (true) {
     std::cout << m;
-    sleep(100);
+    sleep(50);
     m.next_gen();
     std::system("CLS");
   }

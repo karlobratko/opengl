@@ -72,7 +72,7 @@ void data_from_file(std::vector<T>& vec, const char* fileName) {
 	}
 }
 
-int main() {
+int main1() {
 	// WINDOW SETUP
 	Window window{ WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, false, window_framebuffer_size_callback, window_error_callback };
 	try {

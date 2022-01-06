@@ -1,7 +1,7 @@
 #include "Core.h"
 
-#include <GL/glew.h>
 #include <stdio.h>
+#include <GL/glew.h>
 
 void ClearError() { while (glGetError() != GL_NO_ERROR); }
 
