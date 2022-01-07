@@ -18,6 +18,7 @@
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\Utility\SystemInfo\SystemInfo.cpp" />
     <ClCompile Include="src\Vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\Core\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Camera.h" />
@@ -30,6 +31,7 @@
     <ClInclude Include="src\Utility\LookAt\LookAt.h" />
     <ClInclude Include="src\Utility\SystemInfo\SystemInfo.h" />
     <ClInclude Include="src\Vendor\stb_image\stb_image.h" />
+    <ClInclude Include="src\Core\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.frag" />

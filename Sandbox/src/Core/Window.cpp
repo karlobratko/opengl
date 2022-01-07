@@ -140,7 +140,8 @@ void Window::Initialize()
   std::for_each(
     std::begin(m_WindowHints),
     std::end(m_WindowHints),
-    [](const std::pair<int, int>& hint) -> void {
+    [](const std::pair<int, int>& hint) -> void 
+    {
       glfwWindowHint(hint.first, hint.second);
     }
   );
@@ -348,23 +349,27 @@ void Window::MouseCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
   Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
+  float fxOffset = static_cast<float>(xOffset);
+  float fyOffset = static_cast<float>(yOffset);
+
   if (theWindow->m_MouseInitialMovement) 
   {
-    theWindow->m_MouseLastX = xOffset;
-    theWindow->m_MouseLastY = yOffset;
+    theWindow->m_MouseLastX = fxOffset;
+    theWindow->m_MouseLastY = fyOffset;
     theWindow->m_MouseInitialMovement = false;
   }
 
-  theWindow->m_MouseXOffset = xOffset - theWindow->m_MouseLastX;
-  theWindow->m_MouseYOffset = theWindow->m_MouseLastY - yOffset;
+  theWindow->m_MouseXOffset = fxOffset - theWindow->m_MouseLastX;
+  theWindow->m_MouseYOffset = theWindow->m_MouseLastY - fyOffset;
 
-  theWindow->m_MouseLastX = xOffset;
-  theWindow->m_MouseLastY = yOffset;
+  theWindow->m_MouseLastX = fxOffset;
+  theWindow->m_MouseLastY = fyOffset;
 }
 
 void Window::ScrollCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
   Window* theWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
-  theWindow->m_ScrollXOffset = xOffset;
-  theWindow->m_ScrollYOffset = yOffset;
+
+  theWindow->m_ScrollXOffset = static_cast<float>(xOffset);
+  theWindow->m_ScrollYOffset = static_cast<float>(yOffset);
 }

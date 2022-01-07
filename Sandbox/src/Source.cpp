@@ -10,6 +10,7 @@
 #include "Core/Core.h"
 #include "Core/Window.h"
 #include "Core/Shader.h"
+#include "Core/Texture.h"
 #include "Core/Camera.h"
 
 #include "Logging/Logger.h"
@@ -39,7 +40,7 @@ Camera camera{ glm::vec3{ 0.0f, 0.0f, 3.0f } };
 
 // FUNCTION DECLARATIONS
 void WindowErrorCallback(int error, const char* description);
-void MoveCamera(Window& window);
+void UpdateCamera(Window& window);
 
 int main() 
 {
@@ -147,34 +148,19 @@ int main()
     CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
   }
 
-  GLuint texContainer;
+  Texture texContainer{};
+  try
   {
-    CALL(glGenTextures(1, &texContainer));
-    CALL(glBindTexture(GL_TEXTURE_2D, texContainer));
-
-    CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-    CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-
-    CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-    CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-
-    GLsizei width, height, nrChannels;
-    stbi_set_flip_vertically_on_load(1);
-    GLubyte* data = stbi_load(TEX_PATH_CONTAINER, &width, &height, &nrChannels, 0);
-
-    if (data)
-    {
-      CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
-      CALL(glGenerateMipmap(GL_TEXTURE_2D));
-      stbi_image_free(data);
-    }
-    else
-    {
-      Logger::Instance(std::cerr).Log() << "[ERROR] Could not load texture, path: " << TEX_PATH_CONTAINER;
-      return EXIT_FAILURE;
-    }
-
-    CALL(glBindTexture(GL_TEXTURE_2D, 0));
+    texContainer.SetTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+    texContainer.SetTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+    texContainer.SetTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    texContainer.SetTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    texContainer.LoadFromFile(TEX_PATH_CONTAINER, GL_TEXTURE_2D, GL_TRUE, GL_RGB, GL_UNSIGNED_BYTE);
+  }
+  catch (const std::exception& err)
+  {
+    Logger::Instance(std::cerr).Log() << err.what();
+    return EXIT_FAILURE;
   }
 
   shader.Bind();
@@ -185,14 +171,14 @@ int main()
   CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
   while (!window.ShouldClose())
   {
-    float currentFrame = glfwGetTime();
+    float currentFrame = static_cast<float>(glfwGetTime());
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
     window.CalculateFPS();
     glfwPollEvents();
     
-    MoveCamera(window);
+    UpdateCamera(window);
 
     CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -207,7 +193,7 @@ int main()
     shader.SetUniformMatrix4fv(shader.GetUniformLocation("projection"), GL_FALSE, glm::value_ptr(projection));
 
     CALL(glActiveTexture(GL_TEXTURE0));
-    CALL(glBindTexture(GL_TEXTURE_2D, texContainer));
+    texContainer.Bind();
 
     CALL(glBindVertexArray(VAO));
     CALL(glDrawArrays(GL_TRIANGLES, 0, 36));
@@ -233,7 +219,7 @@ int main()
   CALL(glDeleteVertexArrays(1, &VAO));
   CALL(glDeleteBuffers(1, &VBO));
 
-  CALL(glDeleteTextures(1, &texContainer));
+  texContainer.Dispose();
 
   shader.Dispose();
 
@@ -245,7 +231,7 @@ void WindowErrorCallback(int error, const char* description)
   Logger::Instance(std::cerr).Log() << u8"[ERROR::GLFW] : code: " << error << " msg: " << description;
 }
 
-void MoveCamera(Window& window)
+void UpdateCamera(Window& window)
 {
   if (window.GetKeyState(GLFW_KEY_W) == GLFW_PRESS)
     camera.ProcessKeyboardFPS(Camera::MovementDirection::FORWARD, deltaTime);

@@ -1,5 +1,7 @@
 #include "Camera.h"
 
+#include <cmath>
+
 Camera::Camera() :
   Camera(Camera::defaultPosition)
 {
@@ -89,9 +91,9 @@ void Camera::ProcessMouseScroll(float yOffset)
 void Camera::UpdateCameraVectors()
 {
   glm::vec3 front{};
-  front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-  front.y = sin(glm::radians(m_Pitch));
-  front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+  front.x = std::cos(glm::radians(m_Yaw)) * std::cos(glm::radians(m_Pitch));
+  front.y = std::sin(glm::radians(m_Pitch));
+  front.z = std::sin(glm::radians(m_Yaw)) * std::cos(glm::radians(m_Pitch));
   m_Front = glm::normalize(front);
 
   m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
