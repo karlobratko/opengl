@@ -74,6 +74,10 @@ void Texture::Dispose()
   if (m_ID) 
   {
     CALL(glDeleteTextures(1, &m_ID));
-    m_ID = 0;
+    m_ID       = 0;
+    m_Width    = 0;
+    m_Height   = 0;
+    m_BitDepth = 0;
+    m_TexParameters.clear();
   }
 }

@@ -6,8 +6,8 @@
 
 class Camera {
 public:
-  enum class MovementDirection 
-    : std::int32_t 
+  enum class MovementDirection
+    : std::int32_t
   {
     FORWARD,
     BACKWARD,
@@ -25,7 +25,12 @@ public:
     return glm::lookAt(m_Position, m_Position + m_Front, m_Up);
   }
 
-  inline float GetCameraZoom() const 
+  inline glm::vec3 GetPosition() const 
+  {
+    return m_Position;
+  }
+
+  inline float GetZoom() const 
   {
     return m_Zoom;
   }

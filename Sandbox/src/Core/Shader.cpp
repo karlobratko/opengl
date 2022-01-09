@@ -188,7 +188,15 @@ void Shader::SetUniform1f(unsigned int uniformLocation, float value) const
 {
   CALL(glUniform1f(uniformLocation, value));
 }
-void Shader::SetUniformMatrix4fv(unsigned int uniformLocation, unsigned char transpose, const float* value) 
+void Shader::SetUniform3f(unsigned int uniformLocation, float value1, float value2, float value3) const
+{
+  CALL(glUniform3f(uniformLocation, value1, value2, value3));
+}
+void Shader::SetUniform3fv(unsigned int uniformLocation, const float* value, int count)
+{
+  CALL(glUniform3fv(uniformLocation, count, value));
+}
+void Shader::SetUniformMatrix4fv(unsigned int uniformLocation, const float* value, unsigned char transpose)
 {
   CALL(glUniformMatrix4fv(uniformLocation, 1, transpose, value));
 }

@@ -25,7 +25,9 @@ public:
 	void SetUniform1b(unsigned int uniformLocation, bool value) const;
 	void SetUniform1i(unsigned int uniformLocation, int value) const;
 	void SetUniform1f(unsigned int uniformLocation, float value) const;
-	void SetUniformMatrix4fv(unsigned int uniformLocation, unsigned char transpose, const float* value);
+  void SetUniform3f(unsigned int uniformLocation, float value1, float value2, float value3) const;
+  void SetUniform3fv(unsigned int uniformLocation, const float* value, int count = 1);
+	void SetUniformMatrix4fv(unsigned int uniformLocation, const float* value, unsigned char transpose = GL_FALSE);
 	
 	void Bind() const;
 	void UnBind() const;

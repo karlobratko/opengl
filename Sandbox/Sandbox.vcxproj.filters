@@ -78,5 +78,9 @@
   <ItemGroup>
     <None Include="res\shaders\basic.vert" />
     <None Include="res\shaders\basic.frag" />
+    <None Include="res\shaders\obj.vert" />
+    <None Include="res\shaders\obj.frag" />
+    <None Include="res\shaders\light_source.frag" />
+    <None Include="res\shaders\light_source.vert" />
   </ItemGroup>
 </Project>
