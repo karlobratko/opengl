@@ -21,6 +21,7 @@
     <ClCompile Include="src\Core\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Buffer.h" />
     <ClInclude Include="src\Core\Camera.h" />
     <ClInclude Include="src\Core\Core.h" />
     <ClInclude Include="src\Core\Shader.h" />
@@ -34,12 +35,18 @@
     <ClInclude Include="src\Core\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\data\materials.csv" />
     <None Include="res\shaders\basic.frag" />
     <None Include="res\shaders\basic.vert" />
     <None Include="res\shaders\light_source.vert" />
-    <None Include="res\shaders\obj.frag" />
-    <None Include="res\shaders\obj.vert" />
+    <None Include="res\shaders\material.frag" />
+    <None Include="res\shaders\material.vert" />
     <None Include="res\shaders\light_source.frag" />
+    <None Include="res\shaders\object.frag" />
+    <None Include="res\shaders\object.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\data\cube.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

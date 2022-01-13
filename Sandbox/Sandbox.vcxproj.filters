@@ -74,13 +74,22 @@
     <ClInclude Include="src\Core\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.vert" />
     <None Include="res\shaders\basic.frag" />
-    <None Include="res\shaders\obj.vert" />
-    <None Include="res\shaders\obj.frag" />
     <None Include="res\shaders\light_source.frag" />
     <None Include="res\shaders\light_source.vert" />
+    <None Include="res\shaders\object.frag" />
+    <None Include="res\shaders\object.vert" />
+    <None Include="res\shaders\material.frag" />
+    <None Include="res\shaders\material.vert" />
+    <None Include="res\data\materials.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\data\cube.txt" />
   </ItemGroup>
 </Project>

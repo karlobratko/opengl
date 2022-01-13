@@ -22,10 +22,10 @@ public:
 	unsigned int GetAttributeLocation(const char* attribute);
 	unsigned int GetUniformLocation(const char* uniform);
 
-	void SetUniform1b(unsigned int uniformLocation, bool value) const;
-	void SetUniform1i(unsigned int uniformLocation, int value) const;
-	void SetUniform1f(unsigned int uniformLocation, float value) const;
-  void SetUniform3f(unsigned int uniformLocation, float value1, float value2, float value3) const;
+	void SetUniform1b(unsigned int uniformLocation, bool value);
+	void SetUniform1i(unsigned int uniformLocation, int value);
+	void SetUniform1f(unsigned int uniformLocation, float value);
+  void SetUniform3f(unsigned int uniformLocation, float value1, float value2, float value3);
   void SetUniform3fv(unsigned int uniformLocation, const float* value, int count = 1);
 	void SetUniformMatrix4fv(unsigned int uniformLocation, const float* value, unsigned char transpose = GL_FALSE);
 	

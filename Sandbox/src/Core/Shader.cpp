@@ -176,19 +176,19 @@ unsigned int Shader::GetUniformLocation(const char* uniform)
   return uniformLocation;
 }
 
-void Shader::SetUniform1b(unsigned int uniformLocation, bool value) const 
+void Shader::SetUniform1b(unsigned int uniformLocation, bool value) 
 {
   CALL(glUniform1i(uniformLocation, (int)value));
 }
-void Shader::SetUniform1i(unsigned int uniformLocation, int value) const 
+void Shader::SetUniform1i(unsigned int uniformLocation, int value) 
 {
   CALL(glUniform1i(uniformLocation, value));
 }
-void Shader::SetUniform1f(unsigned int uniformLocation, float value) const 
+void Shader::SetUniform1f(unsigned int uniformLocation, float value) 
 {
   CALL(glUniform1f(uniformLocation, value));
 }
-void Shader::SetUniform3f(unsigned int uniformLocation, float value1, float value2, float value3) const
+void Shader::SetUniform3f(unsigned int uniformLocation, float value1, float value2, float value3)
 {
   CALL(glUniform3f(uniformLocation, value1, value2, value3));
 }
