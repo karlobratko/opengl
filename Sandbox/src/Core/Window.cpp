@@ -7,6 +7,13 @@
 #include "Core/Core.h"
 #include "Logging/Logger.h"
 
+const std::unordered_map<int, int> Window::defaultWindowHints{
+  { GLFW_CONTEXT_VERSION_MAJOR, 3 },
+  { GLFW_CONTEXT_VERSION_MINOR, 3 },
+  { GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE },
+  { GLFW_SAMPLES, 4 },
+};
+
 Window::Window() :
   Window(Window::defaultTitle ,
          Window::defaultWidth ,
@@ -137,6 +144,8 @@ void Window::Initialize()
     throw std::exception{ "[ERROR::GLFW] Could not init GLFW" };
   }
 
+  std::unordered_map<int, int> tempWindowHints{ Window::defaultWindowHints };
+  m_WindowHints.merge(tempWindowHints);
   std::for_each(
     std::begin(m_WindowHints),
     std::end(m_WindowHints),

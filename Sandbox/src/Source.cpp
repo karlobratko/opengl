@@ -28,13 +28,17 @@
 constexpr const char* TEX_PATH_CONTAINER = "res/textures/container.jpg";
 constexpr const char* TEX_PATH_FACE = "res/textures/awesomeface.png";
 constexpr const char* TEX_PATH_KITTEN = "res/textures/kitten.jpg";
+constexpr const char* TEX_PATH_STEEL_WOOD_CONTAINER = "res/textures/steel_wood_container.png";
+constexpr const char* TEX_PATH_STEEL_WOOD_CONTAINER_SPECULAR = "res/textures/steel_wood_container_specular.png";
 
 constexpr const char* SHDR_VERT_PATH_OBJECT = "res/shaders/object.vert";
-constexpr const char* SHDR_VERT_PATH_LIGHT_SOURCE = "res/shaders/light_source.vert";
-constexpr const char* SHDR_VERT_PATH_MATERIAL = "res/shaders/material.vert";
 constexpr const char* SHDR_FRAG_PATH_OBJECT = "res/shaders/object.frag";
+constexpr const char* SHDR_VERT_PATH_LIGHT_SOURCE = "res/shaders/light_source.vert";
 constexpr const char* SHDR_FRAG_PATH_LIGHT_SOURCE = "res/shaders/light_source.frag";
+constexpr const char* SHDR_VERT_PATH_MATERIAL = "res/shaders/material.vert";
 constexpr const char* SHDR_FRAG_PATH_MATERIAL = "res/shaders/material.frag";
+constexpr const char* SHDR_VERT_PATH_LIGHTING_MAP = "res/shaders/lighting_map.vert";
+constexpr const char* SHDR_FRAG_PATH_LIGHTING_MAP = "res/shaders/lighting_map.frag";
 
 constexpr const char* DATA_PATH_CUBE = "res/data/cube.txt";
 
@@ -69,13 +73,7 @@ void ReadFile(const char* filename, std::vector<T>& dest);
 int main()
 {
   Window window{ WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, false, WindowErrorCallback };
-  try
-  {
-    window.SetHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    window.SetHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    window.SetHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    window.SetHint(GLFW_SAMPLES, 4);
-
+  try {
     window.Initialize();
   }
   catch (const std::exception& err)
@@ -88,8 +86,8 @@ int main()
   Shader objShdr{};
   try
   {
-    objShdr.LoadFromFile(GL_VERTEX_SHADER, SHDR_VERT_PATH_MATERIAL);
-    objShdr.LoadFromFile(GL_FRAGMENT_SHADER, SHDR_FRAG_PATH_MATERIAL);
+    objShdr.LoadFromFile(GL_VERTEX_SHADER, SHDR_VERT_PATH_LIGHTING_MAP);
+    objShdr.LoadFromFile(GL_FRAGMENT_SHADER, SHDR_FRAG_PATH_LIGHTING_MAP);
     objShdr.Link();
   }
   catch (const std::exception& err)
@@ -136,6 +134,9 @@ int main()
 
       CALL(glVertexAttribPointer(objShdr.GetAttributeLocation("normal"), 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<const void*>(3 * sizeof(float))));
       CALL(glEnableVertexAttribArray(objShdr.GetAttributeLocation("normal")));
+
+      CALL(glVertexAttribPointer(objShdr.GetAttributeLocation("texCoords"), 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<const void*>(6 * sizeof(float))));
+      CALL(glEnableVertexAttribArray(objShdr.GetAttributeLocation("texCoords")));
     }
     catch (const std::exception& err)
     {
@@ -168,6 +169,24 @@ int main()
     buffer.UnBind();
   }
 
+  Texture diffuseMap{};
+  Texture specularMap{};
+  try
+  {
+    diffuseMap.LoadFromFile(TEX_PATH_STEEL_WOOD_CONTAINER, GL_TEXTURE_2D, GL_FALSE);
+    specularMap.LoadFromFile(TEX_PATH_STEEL_WOOD_CONTAINER_SPECULAR, GL_TEXTURE_2D, GL_FALSE);
+  }
+  catch (const std::exception& err)
+  {
+    Logger::Instance(std::cerr).Log() << err.what();
+    return EXIT_FAILURE;
+  }
+
+  objShdr.Bind();
+  objShdr.SetUniform1i(objShdr.GetUniformLocation("material.diffuse"), GL_TEXTURE0 - GL_TEXTURE0);
+  objShdr.SetUniform1i(objShdr.GetUniformLocation("material.specular"), GL_TEXTURE1 - GL_TEXTURE0);
+  objShdr.UnBind();
+
   CALL(glEnable(GL_DEPTH_TEST));
   CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
   while (!window.ShouldClose())
@@ -199,15 +218,19 @@ int main()
 
       objShdr.SetUniform3fv(objShdr.GetUniformLocation("cameraPosition"), glm::value_ptr(camera.GetPosition()));
 
-      objShdr.SetUniform3fv(objShdr.GetUniformLocation("material.ambient"), glm::value_ptr(objectColor));
-      objShdr.SetUniform3fv(objShdr.GetUniformLocation("material.diffuse"), glm::value_ptr(objectColor));
-      objShdr.SetUniform3fv(objShdr.GetUniformLocation("material.specular"), glm::value_ptr(glm::vec3{ 0.5f })); // specular highlight on the surface
-      objShdr.SetUniform1f(objShdr.GetUniformLocation("material.shininess"), 32.0f); // radius fo the specular highlight
+      //objShdr.SetUniform3fv(objShdr.GetUniformLocation("material.specular"), glm::value_ptr(glm::vec3{ 0.5f })); // specular highlight of the surface
+      objShdr.SetUniform1f(objShdr.GetUniformLocation("material.shininess"), 64.0f); // radius fo the specular highlight
 
       objShdr.SetUniform3fv(objShdr.GetUniformLocation("light.position"), glm::value_ptr(lightPosition));
       objShdr.SetUniform3fv(objShdr.GetUniformLocation("light.ambient"), glm::value_ptr(glm::vec3{ 0.2f })); // low intensity
       objShdr.SetUniform3fv(objShdr.GetUniformLocation("light.diffuse"), glm::value_ptr(glm::vec3{ 0.8f })); // darkened -> usually around light color
       objShdr.SetUniform3fv(objShdr.GetUniformLocation("light.specular"), glm::value_ptr(glm::vec3{ 1.0f })); // usually 1.0f (full intensity)
+
+      CALL(glActiveTexture(GL_TEXTURE0));
+      diffuseMap.Bind();
+
+      CALL(glActiveTexture(GL_TEXTURE1));
+      specularMap.Bind();
 
       CALL(glBindVertexArray(objectVAO));
       CALL(glDrawArrays(GL_TRIANGLES, 0, 36));
@@ -218,7 +241,7 @@ int main()
     {
       lightSrcShdr.Bind();
       glm::mat4 model = glm::translate(glm::mat4{ 1.0f }, lightPosition);
-      model = glm::scale(model, glm::vec3{ 0.2f });
+                model = glm::scale(model, glm::vec3{ 0.2f });
 
       lightSrcShdr.SetUniformMatrix4fv(lightSrcShdr.GetUniformLocation("model"), glm::value_ptr(model));
       lightSrcShdr.SetUniformMatrix4fv(lightSrcShdr.GetUniformLocation("view"), glm::value_ptr(view));
@@ -240,6 +263,7 @@ int main()
   {
     CALL(glDisableVertexAttribArray(objShdr.GetAttributeLocation("position")));
     CALL(glDisableVertexAttribArray(objShdr.GetAttributeLocation("normal")));
+    CALL(glDisableVertexAttribArray(objShdr.GetAttributeLocation("texCoords")));
   }
   catch (const std::exception& err)
   {
@@ -263,6 +287,8 @@ int main()
   CALL(glDeleteVertexArrays(1, &objectVAO));
   CALL(glDeleteVertexArrays(1, &lightVAO));
 
+  diffuseMap.Dispose();
+  specularMap.Dispose();
   buffer.Dispose();
   objShdr.Dispose();
   lightSrcShdr.Dispose();

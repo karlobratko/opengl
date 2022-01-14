@@ -13,7 +13,6 @@ public:
   void LoadFromFile(const char* path                                    ,
                     unsigned int target     = Texture::defaultTarget    ,
                     int flipTexture         = Texture::defaultFlip      ,
-                    unsigned int dataFormat = Texture::defaultDataFormat,
                     unsigned int dataType   = Texture::defaultDataType  );
 
   void Bind() const;
@@ -24,8 +23,9 @@ public:
 private:
   static constexpr unsigned int defaultTarget     = GL_TEXTURE_2D;
   static constexpr int          defaultFlip       = GL_TRUE;
-  static constexpr unsigned int defaultDataFormat = GL_RGB;
   static constexpr unsigned int defaultDataType   = GL_UNSIGNED_BYTE;
+
+  const static std::unordered_map<int, int> defaultTexParameters;
 
   unsigned int m_ID     = 0;
   unsigned int m_Target = 0;

@@ -88,6 +88,8 @@
     <None Include="res\shaders\material.frag" />
     <None Include="res\shaders\material.vert" />
     <None Include="res\data\materials.csv" />
+    <None Include="res\shaders\lighting_map.frag" />
+    <None Include="res\shaders\lighting_map.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\data\cube.txt" />

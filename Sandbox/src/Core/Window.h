@@ -67,6 +67,8 @@ private:
   static constexpr bool defaultFullscreen   = false;
   static constexpr int defaultSwapInterval  = 1;
 
+  const static std::unordered_map<int, int> defaultWindowHints;
+
   GLFWwindow* m_Window = nullptr;
   std::string m_Title;
   int m_Width;

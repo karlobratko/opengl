@@ -7,6 +7,13 @@
 
 #include "Vendor/stb_image/stb_image.h"
 
+const std::unordered_map<int, int> Texture::defaultTexParameters{
+  { GL_TEXTURE_WRAP_S, GL_REPEAT },
+  { GL_TEXTURE_WRAP_T, GL_REPEAT },
+  { GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR },
+  { GL_TEXTURE_MAG_FILTER, GL_LINEAR },
+};
+
 Texture::~Texture()
 {
   Dispose();
@@ -24,28 +31,47 @@ void Texture::SetTexParameter(int parameter, int value)
   }
 }
 
-void Texture::LoadFromFile(const char* path, unsigned int target, int flipTexture, unsigned int dataFormat, unsigned int dataType)
+void Texture::LoadFromFile(const char* path, unsigned int target, int flipTexture, unsigned int dataType)
 {
   m_Target = target;
 
   CALL(glGenTextures(1, &m_ID));
   Bind();
 
+  std::unordered_map<int, int> tempTexParams{ Texture::defaultTexParameters };
+  m_TexParameters.merge(tempTexParams);
   std::for_each(
     std::begin(m_TexParameters),
     std::end(m_TexParameters),
-    [&](const std::pair<int, int>& param) -> void 
+    [&](const std::pair<int, int>& param) -> void
     {
       CALL(glTexParameteri(m_Target, param.first, param.second));
     }
   );
+
 
   stbi_set_flip_vertically_on_load(flipTexture);
   unsigned char* data = stbi_load(path, &m_Width, &m_Height, &m_BitDepth, 0);
 
   if (data)
   {
-    CALL(glTexImage2D(m_Target, 0, dataFormat, m_Width, m_Height, 0, dataFormat, dataType, data));
+    unsigned int format;
+    switch (m_BitDepth)
+    {
+    case 1:
+      format = GL_RED;
+      break;
+    case 3:
+      format = GL_RGB;
+      break;
+    case 4:
+      format = GL_RGBA;
+      break;
+    default:
+      throw std::exception{ "[ERROR] Could not load texture, error while trying to determine data format." };
+    }
+
+    CALL(glTexImage2D(m_Target, 0, format, m_Width, m_Height, 0, format, dataType, data));
     CALL(glGenerateMipmap(m_Target));
     stbi_image_free(data);
   }
